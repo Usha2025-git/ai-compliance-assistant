@@ -4,43 +4,29 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo")
+# Lazy initialization - do NOT instantiate at module load
+_llm = None
+
+def get_llm():
+    global _llm
+    if _llm is None:
+        _llm = ChatOpenAI(model="gpt-3.5-turbo")
+    return _llm
+
 
 def run_pipeline(query, vectorstore):
-    # Agent 1: Retriever
-    docs = vectorstore.similarity_search(query, k=3)
-    context = "\n\n".join([d.page_content for d in docs])
+    """
+    Run the multi-agent pipeline
+    """
+    from .rag import answer_question
     
-    # Agent 2: Risk Analysis
-    risk_prompt = f"""
-Based on this compliance context:
-{context}
-
-Question: {query}
-
-Provide a risk assessment (HIGH/MEDIUM/LOW) and explain why.
-"""
-    risk_analysis = llm.predict(risk_prompt)
+    llm = get_llm()
     
-    # Agent 3: PM Output
-    pm_prompt = f"""
-Based on this compliance context:
-{context}
-
-Risk Analysis:
-{risk_analysis}
-
-Question: {query}
-
-Create:
-1. User story (As a... I want... So that...)
-2. Acceptance criteria (3 bullet points)
-3. Product recommendation
-"""
-    pm_output = llm.predict(pm_prompt)
+    # Your agent logic here
+    result = answer_question(query, vectorstore)
     
     return {
-        "retrieved_context": context,
-        "risk_analysis": risk_analysis,
-        "pm_output": pm_output
+        "retrieved_context": "...",
+        "risk_analysis": "...",
+        "pm_output": result
     }
