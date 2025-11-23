@@ -4,65 +4,43 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Initialize the LLM
-llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
-    api_key=os.getenv("OPENAI_API_KEY"),
-    temperature=0.7
-)
+llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo")
 
 def run_pipeline(query, vectorstore):
-    """
-    Multi-agent pipeline:
-    1. Retriever Agent - gets relevant docs
-    2. Risk Agent - analyzes compliance risk
-    3. PM Agent - generates product recommendations
-    """
-    
-    # AGENT 1: Retriever Agent
+    # Agent 1: Retriever
     docs = vectorstore.similarity_search(query, k=3)
-    retrieved_context = "\n\n".join([d.page_content for d in docs])
+    context = "\n\n".join([d.page_content for d in docs])
     
-    # AGENT 2: Risk Assessment Agent
+    # Agent 2: Risk Analysis
     risk_prompt = f"""
-You are a compliance risk analyst. Based on the following context, analyze the risk level.
-
-Context:
-{retrieved_context}
+Based on this compliance context:
+{context}
 
 Question: {query}
 
-Provide:
-1. Risk Level (Low/Medium/High)
-2. Key compliance concerns
-3. Recommended actions
-
-Keep it concise.
+Provide a risk assessment (HIGH/MEDIUM/LOW) and explain why.
 """
-    risk_analysis = llm.invoke(risk_prompt).content
+    risk_analysis = llm.predict(risk_prompt)
     
-    # AGENT 3: PM Output Agent
+    # Agent 3: PM Output
     pm_prompt = f"""
-You are a Product Manager. Based on this compliance analysis, create:
+Based on this compliance context:
+{context}
 
-Context: {retrieved_context}
-
-Risk Analysis: {risk_analysis}
+Risk Analysis:
+{risk_analysis}
 
 Question: {query}
 
-Provide:
-1. User Story (As a [user], I want [goal], so that [benefit])
-2. Acceptance Criteria (3 bullet points)
-3. Product Recommendation
-
-Keep it professional and concise.
+Create:
+1. User story (As a... I want... So that...)
+2. Acceptance criteria (3 bullet points)
+3. Product recommendation
 """
-    pm_output = llm.invoke(pm_prompt).content
+    pm_output = llm.predict(pm_prompt)
     
-    # Return structured response
     return {
-        "retrieved_context": retrieved_context,
+        "retrieved_context": context,
         "risk_analysis": risk_analysis,
         "pm_output": pm_output
     }
