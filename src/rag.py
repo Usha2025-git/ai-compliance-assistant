@@ -1,10 +1,31 @@
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_community.vectorstores import Chroma
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings, OpenAI
+from langchain.vectorstores import Chroma
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# ✅ Initialize as None - will be created lazily
+_embeddings = None
+_llm = None
+
+
+def get_embeddings():
+    """Lazy initialization of embeddings"""
+    global _embeddings
+    if _embeddings is None:
+        _embeddings = OpenAIEmbeddings()  # No api_key parameter needed
+    return _embeddings
+
+
+def get_llm():
+    """Lazy initialization of LLM"""
+    global _llm
+    if _llm is None:
+        _llm = OpenAI()  # No api_key parameter needed
+    return _llm
+
 
 def chunk_text(text):
     splitter = RecursiveCharacterTextSplitter(
@@ -13,17 +34,15 @@ def chunk_text(text):
     )
     return splitter.split_text(text)
 
-embeddings = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"))
 
 def build_vectorstore(chunks):
     vectorstore = Chroma.from_texts(
         texts=chunks,
-        embedding=embeddings,
+        embedding=get_embeddings(),  # ✅ Call function instead
         collection_name="compliance_docs"
     )
     return vectorstore
 
-llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo")
 
 def answer_question(query, vectorstore):
     docs = vectorstore.similarity_search(query, k=3)
@@ -37,5 +56,6 @@ You are a compliance assistant. Answer ONLY using the information below:
 Question: {query}
 """
     
-    response = llm.predict(prompt)
+    llm = get_llm()  # ✅ Call function instead
+    response = llm(prompt)
     return response
