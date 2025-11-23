@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank of America - AI Compliance Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #012169 0%, #e31837 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #012169;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 40px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #012169;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+        }
+        
+        .file-upload-area:hover {
+            background: #e8eaf6;
+            border-color: #e31837;
+        }
+        
+        .file-upload-area.dragover {
+            background: #e8eaf6;
+            border-color: #e31837;
+            box-shadow: 0 0 10px rgba(227, 24, 55, 0.2);
+        }
+        
+        .upload-content {
+            pointer-events: none;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .file-upload-area p {
+            color: #012169;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .file-upload-area small {
+            color: #666;
+            display: block;
+        }
+        
+        .uploaded-files {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .file-tag {
+            background: #e8eaf6;
+            border: 1px solid #012169;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #012169;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-tag .remove-file {
+            cursor: pointer;
+            color: #e31837;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .file-tag .remove-file:hover {
+            color: #c01530;
+        }
+        
+        label {
+            display: block;
+            color: #012169;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #012169;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: #e31837;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #c01530;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(227, 24, 55, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #012169;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .results-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .results-header {
+            color: #012169;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .result-card {
+            background: #f8f9fa;
+            border-left: 4px solid #012169;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .result-card h3 {
+            color: #012169;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .result-card pre {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #e31837;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #ffe6e6;
+            border-left-color: #e31837;
+            color: #c01530;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Compliance Assistant</h1>
+            <p>Regulatory Analysis & Risk Assessment Platform</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <label for="fileUpload">📎 Upload Compliance Documents (PDF)</label>
+                <div class="file-upload-area" id="fileUploadArea">
+                    <input 
+                        type="file" 
+                        id="fileUpload" 
+                        accept=".pdf" 
+                        style="display: none;"
+                        multiple
+                    >
+                    <div class="upload-content">
+                        <span class="upload-icon">📄</span>
+                        <p>Click to upload or drag & drop PDFs here</p>
+                        <small>Maximum 10 files, 50MB each</small>
+                    </div>
+                    <div id="uploadedFiles" class="uploaded-files"></div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <label for="queryBox">Enter Your Compliance Question</label>
+                <textarea 
+                    id="queryBox" 
+                    placeholder="Example: Does our signup flow violate PCI-DSS requirements?"
+                ></textarea>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="analyze()" id="analyzeBtn">
+                        Analyze Compliance
+                    </button>
+                    <button class="btn-secondary" onclick="clearResults()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+            
+            <div id="statusMessage"></div>
+            
+            <div id="loadingIndicator" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analyzing compliance requirements...</p>
+            </div>
+            
+            <div id="resultsSection" class="results-section" style="display: none;">
+                <div class="results-header">Analysis Results</div>
+                
+                <div class="result-card">
+                    <h3>📄 Retrieved Context</h3>
+                    <pre id="retrievedContext"></pre>
+                </div>
+                
+                <div class="result-card">
+                    <h3>⚠️ Risk Analysis</h3>
+                    <pre id="riskAnalysis"></pre>
+                </div>
+                
+                <div class="result-card">
+                    <h3>✅ Product Manager Recommendation</h3>
+                    <pre id="pmOutput"></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Bank of America - AI Compliance Assistant | Confidential & Proprietary
+        </div>
+    </div>
+
+    <script>
+        // Get the API base URL - works both locally and on Render
+        const API_BASE_URL = window.location.origin;
+        let uploadedFiles = [];
+        
+        // File upload handling
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileUpload = document.getElementById('fileUpload');
+        
+        fileUploadArea.addEventListener('click', () => fileUpload.click());
+        
+        fileUpload.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+        
+        // Drag and drop
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.add('dragover');
+        });
+        
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('dragover');
+        });
+        
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.type === 'application/pdf') {
+                    uploadedFiles.push(file.name);
+                    displayUploadedFiles();
+                } else {
+                    showStatus(`${file.name} is not a PDF. Only PDF files are supported.`, 'error');
+                }
+            }
+        }
+        
+        function displayUploadedFiles() {
+            const uploadedFilesDiv = document.getElementById('uploadedFiles');
+            uploadedFilesDiv.innerHTML = uploadedFiles.map((filename, index) => `
+                <div class="file-tag">
+                    <span>📄 ${filename}</span>
+                    <span class="remove-file" onclick="removeFile(${index})">✕</span>
+                </div>
+            `).join('');
+        }
+        
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            displayUploadedFiles();
+        }
+        
+        async function analyze() {
+            const queryBox = document.getElementById('queryBox');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const resultsSection = document.getElementById('resultsSection');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            const userQuery = queryBox.value.trim();
+            
+            if (!userQuery) {
+                showStatus('Please enter a compliance question', 'error');
+                return;
+            }
+            
+            // Show loading
+            analyzeBtn.disabled = true;
+            loadingIndicator.style.display = 'block';
+            resultsSection.style.display = 'none';
+            statusMessage.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: userQuery })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Display results
+                document.getElementById('retrievedContext').textContent = 
+                    formatOutput(data.retrieved_context) || 'No context retrieved';
+                document.getElementById('riskAnalysis').textContent = 
+                    formatOutput(data.risk_analysis) || 'No risk analysis available';
+                document.getElementById('pmOutput').textContent = 
+                    formatOutput(data.pm_output) || 'No recommendation available';
+                
+                resultsSection.style.display = 'block';
+                showStatus('Analysis complete ✓', 'success');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`Error: ${error.message}. Make sure your backend is running.`, 'error');
+            } finally {
+                analyzeBtn.disabled = false;
+                loadingIndicator.style.display = 'none';
+            }
+        }
+        
+        function formatOutput(data) {
+            if (!data) return '';
+            if (typeof data === 'string') return data;
+            if (typeof data === 'object') return JSON.stringify(data, null, 2);
+            return String(data);
+        }
+        
+        function clearResults() {
+            document.getElementById('queryBox').value = '';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('statusMessage').innerHTML = '';
+        }
+        
+        function showStatus(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.className = `status ${type}`;
+            statusMessage.textContent = message;
+            statusMessage.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 4000);
+            }
+        }
+        
+        // Allow Enter key to submit (Ctrl+Enter)
+        document.getElementById('queryBox').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                analyze();
+            }
+        });
+        
+        // Check backend health on page load
+        window.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.vectorstore_ready) {
+                        showStatus('Backend connected & ready', 'success');
+                    }
+                }
+            } catch (error) {
+                console.log('Backend health check skipped');
+            }
+        });
+    </script>
+</body>
+</html>

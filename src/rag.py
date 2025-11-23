@@ -1,6 +1,6 @@
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, OpenAI
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 import os
 from dotenv import load_dotenv
 
@@ -45,17 +45,31 @@ def build_vectorstore(chunks):
 
 
 def answer_question(query, vectorstore):
-    docs = vectorstore.similarity_search(query, k=3)
-    context = "\n\n".join([d.page_content for d in docs])
-    
-    prompt = f"""
-You are a compliance assistant. Answer ONLY using the information below:
+    try:
+        docs = vectorstore.similarity_search(query, k=3)
+        
+        if not docs:
+            return "No relevant compliance documents found for this query."
+        
+        context = "\n\n".join([d.page_content for d in docs])
+        
+        prompt = f"""You are a compliance assistant. Analyze the following query based on the compliance documents provided.
 
+COMPLIANCE CONTEXT:
 {context}
 
-Question: {query}
-"""
-    
-    llm = get_llm()  # ✅ Call function instead
-    response = llm(prompt)
-    return response
+USER QUERY: {query}
+
+Please provide:
+1. A direct answer to the question
+2. Relevant compliance rules or requirements found
+3. Risk assessment
+4. Recommendations
+
+Keep your response concise and actionable."""
+        
+        llm = get_llm()
+        response = llm(prompt)
+        return response if response else "Analysis completed but no specific guidance available."
+    except Exception as e:
+        return f"Error during analysis: {str(e)}"
