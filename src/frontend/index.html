@@ -349,17 +349,17 @@
                 
                 <div class="result-card">
                     <h3>📄 Retrieved Context</h3>
-                    <pre id="retrievedContext"></pre>
+                    <div id="retrievedContext" style="background: white; padding: 15px; border-radius: 4px; font-size: 14px; line-height: 1.6;"></div>
                 </div>
                 
                 <div class="result-card">
                     <h3>⚠️ Risk Analysis</h3>
-                    <pre id="riskAnalysis"></pre>
+                    <div id="riskAnalysis" style="background: white; padding: 15px; border-radius: 4px; font-size: 14px; line-height: 1.6;"></div>
                 </div>
                 
                 <div class="result-card">
                     <h3>✅ Product Manager Recommendation</h3>
-                    <pre id="pmOutput"></pre>
+                    <div id="pmOutput" style="background: white; padding: 15px; border-radius: 4px; font-size: 14px; line-height: 1.6;"></div>
                 </div>
             </div>
         </div>
@@ -464,11 +464,11 @@
                 
                 // Display results
                 document.getElementById('retrievedContext').textContent = 
-                    formatOutput(data.retrieved_context) || 'No context retrieved';
+                    data.retrieved_context || 'No context retrieved';
                 document.getElementById('riskAnalysis').textContent = 
-                    formatOutput(data.risk_analysis) || 'No risk analysis available';
+                    data.risk_analysis || 'No risk analysis available';
                 document.getElementById('pmOutput').textContent = 
-                    formatOutput(data.pm_output) || 'No recommendation available';
+                    data.pm_output || 'No recommendation available';
                 
                 resultsSection.style.display = 'block';
                 showStatus('Analysis complete ✓', 'success');
