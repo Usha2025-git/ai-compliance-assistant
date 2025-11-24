@@ -1,17 +1,17 @@
-from langchain_openai import ChatOpenAI
+from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Lazy initialization - do NOT instantiate at module load
-_llm = None
+# Initialize OpenAI client
+client = None
 
-def get_llm():
-    global _llm
-    if _llm is None:
-        _llm = ChatOpenAI(model="gpt-3.5-turbo")
-    return _llm
+def get_client():
+    global client
+    if client is None:
+        client = OpenAI()
+    return client
 
 
 def run_pipeline(query, vectorstore):
@@ -19,13 +19,16 @@ def run_pipeline(query, vectorstore):
     Run the multi-agent pipeline with three-part analysis
     """
     try:
-        from .rag import answer_question, get_embeddings, get_llm
+        # Check API key first
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY environment variable not set. Please set your OpenAI API key.")
         
         # Get similar documents (context retrieval)
         docs = vectorstore.similarity_search(query, k=3)
         context_text = "\n\n".join([d.page_content for d in docs]) if docs else "No documents found"
         
-        llm = get_llm()
+        openai_client = get_client()
         
         # 1. Extract Retrieved Context
         retrieved_context = context_text[:500] + "..." if len(context_text) > 500 else context_text
@@ -40,8 +43,12 @@ QUESTION: {query}
 
 Provide a concise risk assessment (2-3 sentences) highlighting potential compliance issues."""
         
-        risk_response = llm.invoke(risk_prompt)
-        risk_analysis = risk_response.content if hasattr(risk_response, 'content') else str(risk_response)
+        risk_response = openai_client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": risk_prompt}],
+            temperature=0.7
+        )
+        risk_analysis = risk_response.choices[0].message.content
         
         # 3. Generate Product Manager Recommendations
         pm_prompt = f"""As a compliance officer, provide specific recommendations for a product manager.
@@ -53,8 +60,12 @@ QUESTION: {query}
 
 Provide 3-4 actionable recommendations with specific compliance requirements."""
         
-        pm_response = llm.invoke(pm_prompt)
-        pm_output = pm_response.content if hasattr(pm_response, 'content') else str(pm_response)
+        pm_response = openai_client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": pm_prompt}],
+            temperature=0.7
+        )
+        pm_output = pm_response.choices[0].message.content
         
         return {
             "retrieved_context": retrieved_context,
