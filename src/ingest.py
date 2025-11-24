@@ -9,16 +9,22 @@ def load_pdfs(folder_path=None):
             os.path.join(os.getcwd(), "data"),  # Current working dir
             "/data",  # Root level
             "./data",  # Relative
+            "data",  # Simple relative
         ]
+        
+        # Debug: Show current working directory
+        print(f"  [DEBUG] Current working directory: {os.getcwd()}")
+        print(f"  [DEBUG] Script directory: {os.path.dirname(os.path.abspath(__file__))}")
         
         # Find first path that exists
         folder_path = None
         for path in possible_paths:
             abs_path = os.path.abspath(path)
-            print(f"  Checking: {abs_path}")
-            if os.path.exists(abs_path):
+            exists = os.path.exists(abs_path)
+            print(f"  Checking: {abs_path} ... {'FOUND' if exists else 'NOT FOUND'}")
+            if exists:
                 folder_path = abs_path
-                print(f"  Found data folder at: {folder_path}")
+                print(f"  ✓ Found data folder at: {folder_path}")
                 break
         
         if folder_path is None:
@@ -38,7 +44,7 @@ def load_pdfs(folder_path=None):
 
     try:
         files = os.listdir(folder_path)
-        print(f"  Found {len(files)} files in data folder")
+        print(f"  Found {len(files)} files in data folder: {files}")
         
         for filename in files:
             if filename.endswith(".pdf"):
@@ -66,4 +72,3 @@ def load_pdfs(folder_path=None):
 if __name__ == "__main__":
     text = load_pdfs()
     print("Loaded PDF characters:", len(text))
-
