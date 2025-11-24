@@ -3,11 +3,30 @@ import os
 
 def load_pdfs(folder_path=None):
     if folder_path is None:
-        # Use absolute path relative to this file
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        folder_path = os.path.join(os.path.dirname(current_dir), "data")
+        # Try multiple possible paths for flexibility
+        possible_paths = [
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data"),  # Parent/data
+            os.path.join(os.getcwd(), "data"),  # Current working dir
+            "/data",  # Root level
+            "./data",  # Relative
+        ]
+        
+        # Find first path that exists
+        folder_path = None
+        for path in possible_paths:
+            abs_path = os.path.abspath(path)
+            print(f"  Checking: {abs_path}")
+            if os.path.exists(abs_path):
+                folder_path = abs_path
+                print(f"  Found data folder at: {folder_path}")
+                break
+        
+        if folder_path is None:
+            print(f"  [ERROR] No data folder found in any expected location")
+            print(f"  Searched: {possible_paths}")
+            return ""
     
-    print(f"  Looking for PDFs in: {folder_path}")
+    print(f"  Using data folder: {folder_path}")
     
     all_text = ""
     pdf_count = 0
