@@ -12,245 +12,335 @@
         }
         
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
             background: linear-gradient(135deg, #012169 0%, #e31837 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 30px 20px;
+            color: #333;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
         }
         
         .header {
-            background: #012169;
+            background: linear-gradient(135deg, #012169 0%, #1a3a70 100%);
             color: white;
-            padding: 30px;
+            padding: 50px 40px;
             text-align: center;
+            border-bottom: 4px solid #e31837;
         }
         
         .header h1 {
-            font-size: 28px;
-            font-weight: 300;
-            margin-bottom: 10px;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
         
         .header p {
-            font-size: 14px;
-            opacity: 0.9;
+            font-size: 16px;
+            opacity: 0.95;
+            font-weight: 300;
+            letter-spacing: 0.3px;
         }
         
         .main-content {
-            padding: 40px;
+            padding: 50px;
         }
         
         .input-section {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #012169;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .file-upload-area {
             border: 2px dashed #012169;
-            border-radius: 8px;
-            padding: 30px;
+            border-radius: 10px;
+            padding: 40px 30px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
-            background: #f8f9fa;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
             margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .file-upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
         }
         
         .file-upload-area:hover {
-            background: #e8eaf6;
+            background: linear-gradient(135deg, #e8eaf6 0%, #e3f2fd 100%);
             border-color: #e31837;
+            box-shadow: 0 8px 20px rgba(227, 24, 55, 0.15);
+            transform: translateY(-2px);
         }
         
         .file-upload-area.dragover {
-            background: #e8eaf6;
+            background: linear-gradient(135deg, #e8eaf6 0%, #e3f2fd 100%);
             border-color: #e31837;
-            box-shadow: 0 0 10px rgba(227, 24, 55, 0.2);
+            box-shadow: 0 12px 30px rgba(227, 24, 55, 0.25);
+            transform: scale(1.02);
         }
         
         .upload-content {
             pointer-events: none;
+            position: relative;
+            z-index: 1;
         }
         
         .upload-icon {
-            font-size: 48px;
+            font-size: 56px;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
         
         .file-upload-area p {
             color: #012169;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 8px;
+            font-size: 16px;
         }
         
         .file-upload-area small {
             color: #666;
             display: block;
+            font-size: 13px;
+            font-weight: 500;
         }
         
         .uploaded-files {
-            margin-top: 20px;
+            margin-top: 15px;
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
         
         .file-tag {
-            background: #e8eaf6;
-            border: 1px solid #012169;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            background: linear-gradient(135deg, #e8eaf6 0%, #f3e5f5 100%);
+            border: 2px solid #012169;
+            padding: 10px 16px;
+            border-radius: 25px;
+            font-size: 13px;
             color: #012169;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(1, 33, 105, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .file-tag:hover {
+            box-shadow: 0 4px 12px rgba(1, 33, 105, 0.2);
+            transform: translateY(-2px);
         }
         
         .file-tag .remove-file {
             cursor: pointer;
             color: #e31837;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 18px;
+            line-height: 1;
+            transition: all 0.2s ease;
         }
         
         .file-tag .remove-file:hover {
             color: #c01530;
+            transform: scale(1.2);
         }
         
         label {
             display: block;
             color: #012169;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-weight: 700;
+            margin-bottom: 12px;
             font-size: 14px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
         }
         
         textarea {
             width: 100%;
-            min-height: 120px;
-            padding: 15px;
+            min-height: 130px;
+            padding: 18px;
             border: 2px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 16px;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             resize: vertical;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
         textarea:focus {
             outline: none;
             border-color: #012169;
+            box-shadow: 0 4px 12px rgba(1, 33, 105, 0.15);
+            background: #fafbfc;
+        }
+        
+        textarea::placeholder {
+            color: #999;
+            font-style: italic;
         }
         
         .button-group {
             display: flex;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 25px;
         }
         
         button {
             flex: 1;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 16px 32px;
+            font-size: 15px;
+            font-weight: 700;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.2px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .btn-primary {
-            background: #e31837;
+            background: linear-gradient(135deg, #e31837 0%, #c01530 100%);
             color: white;
         }
         
         .btn-primary:hover {
-            background: #c01530;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(227, 24, 55, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(227, 24, 55, 0.3);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px);
         }
         
         .btn-secondary {
             background: #f5f5f5;
             color: #012169;
+            border: 2px solid #e0e0e0;
         }
         
         .btn-secondary:hover {
-            background: #e0e0e0;
+            background: #e8eaf6;
+            border-color: #012169;
+            transform: translateY(-3px);
         }
         
         button:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none !important;
         }
         
         .results-section {
-            margin-top: 40px;
-            padding-top: 40px;
-            border-top: 2px solid #f0f0f0;
+            margin-top: 50px;
+            padding-top: 50px;
+            border-top: 3px solid #f0f0f0;
         }
         
         .results-header {
             color: #012169;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 30px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .result-card {
-            background: #f8f9fa;
-            border-left: 4px solid #012169;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+            border-left: 5px solid #012169;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+        
+        .result-card:nth-child(2) {
+            border-left-color: #e31837;
+        }
+        
+        .result-card:nth-child(3) {
+            border-left-color: #12a050;
         }
         
         .result-card h3 {
             color: #012169;
             font-size: 16px;
-            margin-bottom: 10px;
-            font-weight: 600;
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
-        .result-card pre {
+        .result-card div {
             background: white;
-            padding: 15px;
-            border-radius: 4px;
-            overflow-x: auto;
-            font-size: 14px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            padding: 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #333;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
         }
         
         .loading {
             text-align: center;
-            padding: 40px;
+            padding: 50px;
             color: #666;
         }
         
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #e31837;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e31837;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
         }
@@ -260,49 +350,58 @@
             100% { transform: rotate(360deg); }
         }
         
-        .error {
-            background: #ffe6e6;
-            border-left-color: #e31837;
-            color: #c01530;
+        .loading p {
+            font-size: 16px;
+            font-weight: 600;
+            color: #012169;
         }
         
         .status {
-            text-align: center;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .status.success {
-            background: #d4edda;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
+            border-left: 4px solid #12a050;
         }
         
         .status.error {
-            background: #f8d7da;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             color: #721c24;
+            border-left: 4px solid #e31837;
         }
         
         .footer {
-            background: #f8f9fa;
-            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+            padding: 25px;
             text-align: center;
             color: #666;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border-top: 1px solid #e0e0e0;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>AI Compliance Assistant</h1>
-            <p>Regulatory Analysis & Risk Assessment Platform</p>
+            <h1>🔐 AI Compliance Assistant</h1>
+            <p>Enterprise Regulatory Analysis & Risk Assessment Platform</p>
         </div>
         
         <div class="main-content">
             <div class="input-section">
-                <label for="fileUpload">📎 Upload Compliance Documents (PDF)</label>
+                <div class="section-title">📎 Upload Compliance Documents</div>
                 <div class="file-upload-area" id="fileUploadArea">
                     <input 
                         type="file" 
@@ -313,26 +412,26 @@
                     >
                     <div class="upload-content">
                         <span class="upload-icon">📄</span>
-                        <p>Click to upload or drag & drop PDFs here</p>
-                        <small>Maximum 10 files, 50MB each</small>
+                        <p>Click to upload or drag & drop PDFs</p>
+                        <small>Supported: PDF files • Maximum 50MB per file</small>
                     </div>
                     <div id="uploadedFiles" class="uploaded-files"></div>
                 </div>
             </div>
 
             <div class="input-section">
-                <label for="queryBox">Enter Your Compliance Question</label>
+                <div class="section-title">❓ Enter Your Compliance Question</div>
                 <textarea 
                     id="queryBox" 
-                    placeholder="Example: Does our signup flow violate PCI-DSS requirements?"
+                    placeholder="Example: What are the compliance requirements for data privacy? Does this process violate GDPR?"
                 ></textarea>
                 
                 <div class="button-group">
                     <button class="btn-primary" onclick="analyze()" id="analyzeBtn">
-                        Analyze Compliance
+                        🚀 Analyze Compliance
                     </button>
                     <button class="btn-secondary" onclick="clearResults()">
-                        Clear
+                        🔄 Clear
                     </button>
                 </div>
             </div>
@@ -341,31 +440,31 @@
             
             <div id="loadingIndicator" class="loading" style="display: none;">
                 <div class="spinner"></div>
-                <p>Analyzing compliance requirements...</p>
+                <p>⏳ Analyzing compliance requirements...</p>
             </div>
             
             <div id="resultsSection" class="results-section" style="display: none;">
-                <div class="results-header">Analysis Results</div>
+                <div class="results-header">✅ Analysis Results</div>
                 
                 <div class="result-card">
-                    <h3>📄 Retrieved Context</h3>
-                    <div id="retrievedContext" style="background: white; padding: 15px; border-radius: 4px; font-size: 14px; line-height: 1.6;"></div>
+                    <h3>📋 Retrieved Context</h3>
+                    <div id="retrievedContext"></div>
                 </div>
                 
                 <div class="result-card">
                     <h3>⚠️ Risk Analysis</h3>
-                    <div id="riskAnalysis" style="background: white; padding: 15px; border-radius: 4px; font-size: 14px; line-height: 1.6;"></div>
+                    <div id="riskAnalysis"></div>
                 </div>
                 
                 <div class="result-card">
-                    <h3>✅ Product Manager Recommendation</h3>
-                    <div id="pmOutput" style="background: white; padding: 15px; border-radius: 4px; font-size: 14px; line-height: 1.6;"></div>
+                    <h3>✓ Recommendations</h3>
+                    <div id="pmOutput"></div>
                 </div>
             </div>
         </div>
         
         <div class="footer">
-            Bank of America - AI Compliance Assistant | Confidential & Proprietary
+            🏦 Bank of America - AI Compliance Assistant | Enterprise Edition | Confidential & Proprietary
         </div>
     </div>
 
@@ -462,13 +561,13 @@
                 
                 const data = await response.json();
                 
-                // Display results
-                document.getElementById('retrievedContext').textContent = 
-                    data.retrieved_context || 'No context retrieved';
-                document.getElementById('riskAnalysis').textContent = 
-                    data.risk_analysis || 'No risk analysis available';
-                document.getElementById('pmOutput').textContent = 
-                    data.pm_output || 'No recommendation available';
+                // Display results with proper formatting
+                document.getElementById('retrievedContext').innerHTML = 
+                    formatText(data.retrieved_context || 'No context retrieved');
+                document.getElementById('riskAnalysis').innerHTML = 
+                    formatText(data.risk_analysis || 'No risk analysis available');
+                document.getElementById('pmOutput').innerHTML = 
+                    formatText(data.pm_output || 'No recommendation available');
                 
                 resultsSection.style.display = 'block';
                 showStatus('Analysis complete ✓', 'success');
@@ -487,6 +586,59 @@
             if (typeof data === 'string') return data;
             if (typeof data === 'object') return JSON.stringify(data, null, 2);
             return String(data);
+        }
+        
+        function formatText(text) {
+            if (!text) return '<p>No content available</p>';
+            
+            // Split by numbered items (1. 2. 3. etc)
+            const numberPattern = /^\d+\.\s+/gm;
+            const hasNumbers = numberPattern.test(text);
+            
+            if (hasNumbers) {
+                // Format as numbered list
+                const items = text.split(/\n(?=\d+\.\s)/).filter(item => item.trim());
+                let html = '<ol style="padding-left: 25px; line-height: 1.8;">';
+                items.forEach((item, index) => {
+                    const cleanItem = item.replace(/^\d+\.\s+/, '').trim();
+                    html += `<li style="margin-bottom: 15px; padding: 10px; background: #fafbfc; border-radius: 4px; border-left: 3px solid #e31837;">${escapeHtml(cleanItem)}</li>`;
+                });
+                html += '</ol>';
+                return html;
+            }
+            
+            // Format paragraphs and bullet points
+            let html = '';
+            const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
+            
+            paragraphs.forEach((para, index) => {
+                if (para.includes('•') || para.includes('-')) {
+                    // Bullet list
+                    const bullets = para.split(/\n(?=[•\-])/).filter(b => b.trim());
+                    html += '<ul style="padding-left: 25px; margin-bottom: 15px; line-height: 1.8;">';
+                    bullets.forEach(bullet => {
+                        const cleanBullet = bullet.replace(/^[•\-]\s*/, '').trim();
+                        html += `<li style="margin-bottom: 10px; color: #333;">${escapeHtml(cleanBullet)}</li>`;
+                    });
+                    html += '</ul>';
+                } else {
+                    // Regular paragraph
+                    html += `<p style="margin-bottom: 15px; line-height: 1.8; color: #333;">${escapeHtml(para.trim())}</p>`;
+                }
+            });
+            
+            return html;
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
         }
         
         function clearResults() {
