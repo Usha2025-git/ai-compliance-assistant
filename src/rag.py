@@ -46,10 +46,13 @@ def build_vectorstore(chunks):
 
 def answer_question(query, vectorstore):
     try:
+        if vectorstore is None:
+            return "Vector store not initialized. Please ensure PDFs are loaded."
+        
         docs = vectorstore.similarity_search(query, k=3)
         
-        if not docs:
-            return "No relevant compliance documents found for this query."
+        if not docs or len(docs) == 0:
+            return "No relevant compliance documents found for this query. Please upload compliance documents first."
         
         context = "\n\n".join([d.page_content for d in docs])
         
