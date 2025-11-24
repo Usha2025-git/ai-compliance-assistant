@@ -12,24 +12,35 @@ from .agents import run_pipeline
 # -------- SETUP ONLY ONCE -------- #
 
 vectorstore = None
+initialization_error = None
 
 try:
+    print("=" * 60)
+    print("INITIALIZING AI COMPLIANCE ASSISTANT")
+    print("=" * 60)
+    
     print("Loading PDFs...")
     text_data = load_pdfs()
+    print(f"[SUCCESS] Loaded {len(text_data)} characters from PDFs")
 
-    if text_data:  # Only build vectorstore if PDFs loaded
+    if text_data and len(text_data) > 100:  # Must have meaningful content
         print("Chunking text...")
         chunks = chunk_text(text_data)
+        print(f"[SUCCESS] Created {len(chunks)} chunks")
 
         print("Building vector database...")
         vectorstore = build_vectorstore(chunks)
-        print("Vector database ready!")
+        print(f"[SUCCESS] Vector database ready! Loaded {len(chunks)} chunks")
     else:
-        print("No PDFs found - vectorstore will be initialized on first use")
+        print("[WARNING] No PDF content found - vectorstore will be empty")
+        initialization_error = "No PDFs loaded"
 except Exception as e:
-    print(f"Error during initialization: {e}")
+    print(f"[ERROR] Error during initialization: {e}")
     import traceback
     traceback.print_exc()
+    initialization_error = str(e)
+
+print("=" * 60)
 
 # -------- FASTAPI APP -------- #
 
@@ -60,7 +71,9 @@ def health():
     """Health check endpoint"""
     return {
         "status": "ok",
-        "vectorstore_ready": vectorstore is not None
+        "vectorstore_ready": vectorstore is not None,
+        "initialization_error": initialization_error,
+        "message": "Vectorstore ready" if vectorstore is not None else "Vectorstore not initialized"
     }
 
 @app.post("/analyze")
@@ -69,7 +82,13 @@ def analyze(request: QueryRequest):
     Takes a 'query' and runs the multi-agent pipeline.
     """
     if vectorstore is None:
-        return {"error": "Vector store not initialized"}
+        return {
+            "error": "Vector store not initialized",
+            "message": initialization_error or "PDFs not loaded on startup",
+            "retrieved_context": "No documents available",
+            "risk_analysis": "Cannot analyze - no compliance documents loaded",
+            "pm_output": "Please ensure PDF files are in the data/ folder"
+        }
     
     result = run_pipeline(request.query, vectorstore)
     return result
