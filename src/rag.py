@@ -1,5 +1,5 @@
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, OpenAI
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import Chroma
 import os
 from dotenv import load_dotenv
@@ -23,7 +23,7 @@ def get_llm():
     """Lazy initialization of LLM"""
     global _llm
     if _llm is None:
-        _llm = OpenAI()  # No api_key parameter needed
+        _llm = ChatOpenAI(model="gpt-3.5-turbo")  # ✅ Use ChatOpenAI instead of OpenAI
     return _llm
 
 
@@ -36,12 +36,18 @@ def chunk_text(text):
 
 
 def build_vectorstore(chunks):
-    vectorstore = Chroma.from_texts(
-        texts=chunks,
-        embedding=get_embeddings(),  # ✅ Call function instead
-        collection_name="compliance_docs"
-    )
-    return vectorstore
+    try:
+        vectorstore = Chroma.from_texts(
+            texts=chunks,
+            embedding=get_embeddings(),  # ✅ Call function instead
+            collection_name="compliance_docs"
+        )
+        return vectorstore
+    except Exception as e:
+        print(f"Error building vectorstore: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
 
 
 def answer_question(query, vectorstore):
@@ -72,7 +78,7 @@ Please provide:
 Keep your response concise and actionable."""
         
         llm = get_llm()
-        response = llm(prompt)
-        return response if response else "Analysis completed but no specific guidance available."
+        response = llm.invoke(prompt)  # ✅ Use .invoke() for ChatOpenAI
+        return response.content if hasattr(response, 'content') else str(response)
     except Exception as e:
         return f"Error during analysis: {str(e)}"

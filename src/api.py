@@ -17,12 +17,15 @@ try:
     print("Loading PDFs...")
     text_data = load_pdfs()
 
-    print("Chunking text...")
-    chunks = chunk_text(text_data)
+    if text_data:  # Only build vectorstore if PDFs loaded
+        print("Chunking text...")
+        chunks = chunk_text(text_data)
 
-    print("Building vector database...")
-    vectorstore = build_vectorstore(chunks)
-    print("Vector database ready!")
+        print("Building vector database...")
+        vectorstore = build_vectorstore(chunks)
+        print("Vector database ready!")
+    else:
+        print("No PDFs found - vectorstore will be initialized on first use")
 except Exception as e:
     print(f"Error during initialization: {e}")
     import traceback
