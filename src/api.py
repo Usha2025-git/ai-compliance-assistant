@@ -70,10 +70,10 @@ def root():
 def health():
     """Health check endpoint"""
     return {
-        "status": "ok",
+        "status": "ok" if vectorstore is not None else "error",
         "vectorstore_ready": vectorstore is not None,
         "initialization_error": initialization_error,
-        "message": "Vectorstore ready" if vectorstore is not None else "Vectorstore not initialized"
+        "message": "Vectorstore ready and documents loaded" if vectorstore is not None else f"Vectorstore not initialized: {initialization_error}"
     }
 
 @app.post("/analyze")
@@ -84,10 +84,10 @@ def analyze(request: QueryRequest):
     if vectorstore is None:
         return {
             "error": "Vector store not initialized",
-            "message": initialization_error or "PDFs not loaded on startup",
-            "retrieved_context": "No documents available",
-            "risk_analysis": "Cannot analyze - no compliance documents loaded",
-            "pm_output": "Please ensure PDF files are in the data/ folder"
+            "details": initialization_error or "PDFs not loaded on startup. Check if data/ folder exists with PDF files.",
+            "retrieved_context": "ERROR: No documents available",
+            "risk_analysis": "ERROR: Cannot analyze - no compliance documents loaded",
+            "pm_output": "ERROR: Please ensure PDF files are in the data/ folder and the vectorstore initialized successfully"
         }
     
     result = run_pipeline(request.query, vectorstore)
