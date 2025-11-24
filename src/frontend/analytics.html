@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - AI Compliance Assistant</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #012169 0%, #e31837 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #012169;
+            margin-bottom: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .nav-links a {
+            color: #012169;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            background: #e31837;
+            color: white;
+        }
+        
+        .nav-links a.active {
+            background: #012169;
+            color: white;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .chart-card h2 {
+            color: #012169;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .content-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .content-section h2 {
+            color: #012169;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e31837;
+            padding-bottom: 10px;
+        }
+        
+        .metric-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .metric {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #e31837;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            color: #012169;
+            font-weight: bold;
+        }
+        
+        .footer {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Compliance Analytics</h1>
+            <p>Detailed insights and trends in your compliance analysis</p>
+            
+            <div class="nav-links">
+                <a href="/">🏠 Home</a>
+                <a href="/dashboard">📊 Dashboard</a>
+                <a href="/analytics" class="active">📈 Analytics</a>
+                <a href="/docs">📖 API Docs</a>
+            </div>
+        </div>
+        
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h2>Analysis Trends</h2>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h2>Risk Distribution</h2>
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>📊 Key Metrics</h2>
+            <div class="metric-row">
+                <div class="metric">
+                    <div class="metric-label">Average Analysis Time</div>
+                    <div class="metric-value">-</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Most Common Risk</div>
+                    <div class="metric-value">-</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Compliance Rate</div>
+                    <div class="metric-value">-</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Documents Analyzed</div>
+                    <div class="metric-value">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>📋 Insights</h2>
+            <p style="color: #666; line-height: 1.6;">
+                Analytics data will be displayed here as you use the compliance analyzer. 
+                Track trends, identify patterns, and monitor your compliance posture over time.
+            </p>
+        </div>
+        
+        <div class="footer">
+            Bank of America - AI Compliance Assistant | Analytics v1.0
+        </div>
+    </div>
+
+    <script>
+        // Sample trend chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                datasets: [{
+                    label: 'Analyses Performed',
+                    data: [0, 0, 0, 0, 0, 0],
+                    borderColor: '#012169',
+                    backgroundColor: 'rgba(1, 33, 105, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // Sample risk distribution chart
+        const riskCtx = document.getElementById('riskChart').getContext('2d');
+        new Chart(riskCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Low', 'Medium', 'High', 'Critical'],
+                datasets: [{
+                    data: [25, 35, 30, 10],
+                    backgroundColor: [
+                        '#4CAF50',
+                        '#FFC107',
+                        '#FF9800',
+                        '#F44336'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

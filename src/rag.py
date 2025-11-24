@@ -1,6 +1,6 @@
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import Chroma
+from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
@@ -8,23 +8,51 @@ load_dotenv()
 
 # ✅ Initialize as None - will be created lazily
 _embeddings = None
-_llm = None
+_client = None
 
 
 def get_embeddings():
-    """Lazy initialization of embeddings"""
+    """Lazy initialization of embeddings using native OpenAI client"""
     global _embeddings
     if _embeddings is None:
-        _embeddings = OpenAIEmbeddings()  # No api_key parameter needed
+        def create_embedding(text):
+            """Create embedding using native OpenAI client"""
+            client = OpenAI()
+            response = client.embeddings.create(
+                input=text,
+                model="text-embedding-3-small"
+            )
+            return response.data[0].embedding
+        _embeddings = create_embedding
     return _embeddings
 
 
-def get_llm():
-    """Lazy initialization of LLM"""
-    global _llm
-    if _llm is None:
-        _llm = ChatOpenAI(model="gpt-3.5-turbo")  # ✅ Use ChatOpenAI instead of OpenAI
-    return _llm
+class OpenAIEmbeddingFunction:
+    """Custom embedding function to use with Chroma"""
+    def __call__(self, texts):
+        """Create embeddings for a list of texts - deprecated interface"""
+        return self.embed_documents(texts)
+    
+    def embed_documents(self, texts):
+        """Create embeddings for a list of texts - Chroma expected method"""
+        client = OpenAI()
+        embeddings = []
+        for text in texts:
+            response = client.embeddings.create(
+                input=text,
+                model="text-embedding-3-small"
+            )
+            embeddings.append(response.data[0].embedding)
+        return embeddings
+    
+    def embed_query(self, text):
+        """Create embedding for a single query"""
+        client = OpenAI()
+        response = client.embeddings.create(
+            input=text,
+            model="text-embedding-3-small"
+        )
+        return response.data[0].embedding
 
 
 def chunk_text(text):
@@ -37,9 +65,10 @@ def chunk_text(text):
 
 def build_vectorstore(chunks):
     try:
+        embedding_function = OpenAIEmbeddingFunction()
         vectorstore = Chroma.from_texts(
             texts=chunks,
-            embedding=get_embeddings(),  # ✅ Call function instead
+            embedding=embedding_function,
             collection_name="compliance_docs"
         )
         return vectorstore
@@ -77,8 +106,12 @@ Please provide:
 
 Keep your response concise and actionable."""
         
-        llm = get_llm()
-        response = llm.invoke(prompt)  # ✅ Use .invoke() for ChatOpenAI
-        return response.content if hasattr(response, 'content') else str(response)
+        from openai import OpenAI
+        client = OpenAI()
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return response.choices[0].message.content
     except Exception as e:
         return f"Error during analysis: {str(e)}"
